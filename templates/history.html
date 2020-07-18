@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Memes
+{% endblock %}
+
+{% block main %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Link</th>
+                <th>Description</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for meme in memes %}
+                <tr>
+                    <td><a href="{{ meme['link'] }}" target="_blank">Link</a></td>
+                    <td>{{ meme['description'] }}</td>
+                    <td>{{ meme['timestamp'] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

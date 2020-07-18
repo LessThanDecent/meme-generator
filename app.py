@@ -41,12 +41,10 @@ if not os.environ.get("API_KEY"):
     raise RuntimeError("API_KEY not set")
 
 memes = [meme for meme in requests.get("https://api.imgflip.com/get_memes").json()["data"]["memes"] if meme["box_count"] == 2]
-"""
 # Load list of meme formats once
 
 for meme in memes:
     meme["url"] = get_image(meme["id"], "Text 1", "Text 2")
-"""
 
 @app.route("/", methods=["GET", "POST"])
 @login_required
@@ -55,7 +53,7 @@ def index():
     if request.method == "POST":
         meme_id, text0, text1 = request.form.get("format"), request.form.get("text0"), request.form.get("text1")
 
-        if not meme_id or not text0 or not text1:
+        if not meme_id:
             return apology("incomplete form", 403)
 
         url = get_image(meme_id.split(',')[0], text0, text1)
@@ -67,6 +65,22 @@ def index():
     else:
         return render_template("index.html", memes=memes)
 
+@app.route("/history")
+@login_required
+def history():
+    """ Show a table of user's memes """
+    rows = db.execute("SELECT * FROM memes WHERE userID=:id", id=session["user_id"])
+    memes = []
+
+    for row in rows:
+        row_dict = {}
+        row_dict["description"] = f"{row['text0']} | {row['text1']}"
+        row_dict["timestamp"] = row["timestamp"]
+        row_dict["link"] = get_image(row["memeID"], row["text0"], row["text1"])
+
+        memes.append(row_dict)
+    
+    return render_template("history.html", memes=memes)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
