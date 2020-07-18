@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Generate
+{% endblock %}
+
+{% block main %}
+    <form action="/" method="post">
+        <div class="form-group">
+            <select class="form-control" name="format" onchange="changeImage(this)">
+                <option disabled selected value>Meme format</option>
+                {% for meme in memes %}
+                    <option value="{{ meme['id'] }},{{ meme['url'] }}">{{ meme['name'] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <img src="" id="image">
+        <div class="form-group">
+            <input autocomplete="off" autofocus class="form-control" name="text0" placeholder="Text 1" type="text">
+        </div>
+        <div class="form-group">
+            <input autocomplete="off" autofocus class="form-control" name="text1" placeholder="Text 2" type="text">
+        </div>
+        <button class="btn btn-primary" type="submit">Generate</button>
+    </form>
+
+    <script>
+        function changeImage(selectObject) {
+            let url = selectObject.value.split(',')[1];
+            document.getElementById("image").src = url;
+        }
+    </script>
+{% endblock %}
